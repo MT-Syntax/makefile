@@ -1,0 +1,126 @@
+// Makefile Syntax Highlighting
+// Author: MT-Syntax (Unofficial Organization)
+// Repository: https://github.com/MT-Syntax/makefile
+{
+    name: ["Makefile", "Makefile", "makefile", "GNUmakefile", ".mk", ".mak"]
+    hide: false
+    ignoreCase: true
+    
+    comment: {
+        startsWith: "#"
+        addToContains: false
+    }
+
+    styles: [
+        "builtin"     #D73A49  #FF7B72  @B
+        "comment"     #6A737D  #5C6370  @I
+        "function"    #6F42C1  #D2A8FF  @B
+        "keyword"     #D73A49  #FF7B72  @B
+        "meta"        #22863A  #7BCE8A  @_
+        "number"      #005CC5  #79C0FF  @_
+        "operator"    #D73A49  #FF7B72  @_
+        "special_var" #005CC5  #79C0FF  @_
+        "string"      #032F62  #c44b43  @_
+        "target"      #22863A  #7BCE8A  @B
+        "variable"    #E36209  #FFA657  @_
+    ]
+
+    defines: [
+        "IDENT": /[a-zA-Z_][a-zA-Z0-9_-]*/
+        "TARGET": /(?m)^[^\s:#=]+:/
+        "META_TARGET": /(?m)^\.(PHONY|SUFFIXES|DEFAULT|PRECIOUS|INTERMEDIATE|SECONDARY|SECONDEXPANSION|DELETE_ON_ERROR|IGNORE|LOW_RESOLUTION_TIME|SILENT|EXPORT_ALL_VARIABLES|NOTPARALLEL|ONESHELL|POSIX):/
+        "VAR_ASSIGN": /(?m)^([a-zA-Z_][a-zA-Z0-9_]*)\s*([+:?!]?=)/
+        "VAR_REF": /\$[({][^})\s]+[})]/
+        "AUTOMATIC_VAR": /\$[@%<?\^\+\*]/
+        "KEYWORDS": /\b(define|endef|undefine|ifdef|ifndef|ifeq|ifneq|else|endif|include|-include|sinclude|override|export|unexport|private|vpath)\b/
+        "BUILTIN_FUNCS": /\b(subst|patsubst|strip|findstring|filter|filter-out|sort|word|wordlist|firstword|lastword|dir|notdir|suffix|basename|addsuffix|addprefix|join|wildcard|realpath|abspath|error|warning|info|shell|origin|flavor|foreach|if|or|and|call|eval|file|value)\b/
+        "SHELL_OP": /(\|\||&&|;|\||>>?|<<?)/
+        "NUMBER": /\b\d+(\.\d+)?\b/
+
+        "#definition.strings.makefile": [
+            {
+                style: "string"
+                start: {match: /"/}
+                end: {match: /(?<!\\)(?m)"|$/}
+                contains: [
+                    {match: /\\./, 0: "strEscape"}
+                    {match: include("VAR_REF"), 0: "variable"}
+                    {match: include("AUTOMATIC_VAR"), 0: "special_var"}
+                ]
+            }
+            {
+                style: "string"
+                start: {match: /'/}
+                end: {match: /(?<!\\)(?m)'|$/}
+                contains: [
+                    {match: /\\'/, 0: "strEscape"}
+                ]
+            }
+        ]
+
+        "#definition.comments.makefile": {
+            style: "comment"
+            start: {match: "#"}
+            end: {match: "(?m)\n|$"}
+        }
+
+        "#definition.functions.makefile": {
+            style: "function"
+            start: {match: /\$\(/}
+            end: {match: /\)/}
+            contains: [
+                {match: include("BUILTIN_FUNCS"), 0: "builtin"}
+                {include: "#definition.variables.makefile"}
+                {include: "#definition.strings.makefile"}
+                {match: /,/, 0: "operator"}
+            ]
+        }
+
+        "#definition.variables.makefile": [
+            {match: include("VAR_REF"), 0: "variable"}
+            {match: include("AUTOMATIC_VAR"), 0: "special_var"}
+        ]
+
+        "#definition.targets.makefile": [
+            {match: include("META_TARGET"), 0: "meta"}
+            {match: include("TARGET"), 0: "target"}
+        ]
+
+        "#definition.assignments.makefile": {
+            match: include("VAR_ASSIGN")
+            1: "variable"
+            2: "operator"
+        }
+
+        "#definition.keywords.makefile": [
+            {match: include("KEYWORDS"), 0: "keyword"}
+            {match: include("BUILTIN_FUNCS"), 0: "function"}
+        ]
+
+        "#definition.operators.makefile": {
+            match: include("SHELL_OP")
+            0: "operator"
+        }
+
+        "#definition.numbers.makefile": {
+            match: include("NUMBER")
+            0: "number"
+        }
+
+        "#definition.mtsx.makefile": [
+            {include: "#definition.comments.makefile"}
+            {include: "#definition.strings.makefile"}
+            {include: "#definition.functions.makefile"}
+            {include: "#definition.targets.makefile"}
+            {include: "#definition.assignments.makefile"}
+            {include: "#definition.variables.makefile"}
+            {include: "#definition.keywords.makefile"}
+            {include: "#definition.operators.makefile"}
+            {include: "#definition.numbers.makefile"}
+        ]
+    ]
+
+    contains: [
+        {include: "#definition.mtsx.makefile"}
+    ]
+}
