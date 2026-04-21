@@ -8,10 +8,10 @@
 
 # Makefile Syntax Highlighting
 
-[![Status: Unofficial](https://img.shields.io/badge/Status-Unofficial-critical?style=for-the-badge&logo=github)](https://github.com/MT-Syntax)
-[![License: MIT](https://custom-icon-badges.demolab.com/github/license/MT-Syntax/makefile?label=License&color=yellow&style=for-the-badge&logo=law)](./LICENSE)
+[![Status](https://img.shields.io/badge/Status-Unofficial-critical?style=for-the-badge&logo=github)](https://github.com/MT-Syntax)
+[![License](https://org-stats.vercel.app/api/badge/license/MT-Syntax/makefile?label=License&color=yellow&style=for-the-badge&logo=law)](./LICENSE)
 [![Contributions Welcome](https://custom-icon-badges.demolab.com/badge/Contributions-Welcome-brightgreen?style=for-the-badge&logo=people)](./CONTRIBUTING.md)
-[![Version](https://custom-icon-badges.demolab.com/github/v/tag/MT-Syntax/makefile?label=Version&color=blue&style=for-the-badge&logo=tag)](https://github.com/MT-Syntax/makefile/releases)
+[![Version](https://org-stats.vercel.app/api/badge/v/tag/MT-Syntax/makefile?label=Version&color=blue&style=for-the-badge&logo=tag)](https://github.com/MT-Syntax/makefile/releases)
 
 </div>
 
