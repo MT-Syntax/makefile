@@ -1,4 +1,4 @@
-# Contributing
+# Contribution Guidelines
 
 Thank you for your interest in contributing to the MT-Syntax project. This document outlines the guidelines and best practices for contributing to our syntax highlighting repositories. By following these guidelines, you help maintain a clean and consistent codebase for everyone.
 
