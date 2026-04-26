@@ -14,6 +14,7 @@
     styles: [
         "builtin"     #D73A49  #FF7B72  @B
         "comment"     #6A737D  #5C6370  @I
+        "escape"      #D73A49  #FF7B72  @_
         "function"    #6F42C1  #D2A8FF  @B
         "keyword"     #D73A49  #FF7B72  @B
         "meta"        #22863A  #7BCE8A  @_
@@ -42,9 +43,18 @@
                 start: {match: /"/}
                 end: {match: /(?<!\\)(?m)"|$/}
                 contains: [
-                    {match: /\\./, 0: "strEscape"}
-                    {match: include("VAR_REF"), 0: "variable"}
-                    {match: include("AUTOMATIC_VAR"), 0: "special_var"}
+                    {
+                        match: /\\./
+                        0: "escape"
+                    }
+                    {
+                        match: include("VAR_REF")
+                        0: "variable"
+                    }
+                    {
+                        match: include("AUTOMATIC_VAR")
+                        0: "special_var"
+                    }
                 ]
             }
             {
@@ -52,7 +62,10 @@
                 start: {match: /'/}
                 end: {match: /(?<!\\)(?m)'|$/}
                 contains: [
-                    {match: /\\'/, 0: "strEscape"}
+                    {
+                        match: /\\'/
+                        0: "strEscape"
+                    }
                 ]
             }
         ]
@@ -68,21 +81,39 @@
             start: {match: /\$\(/}
             end: {match: /\)/}
             contains: [
-                {match: include("BUILTIN_FUNCS"), 0: "builtin"}
+                {
+                    match: include("BUILTIN_FUNCS")
+                    0: "builtin"
+                }
                 {include: "#definition.variables.makefile"}
                 {include: "#definition.strings.makefile"}
-                {match: /,/, 0: "operator"}
+                {
+                    match: /,/
+                    0: "operator"
+                }
             ]
         }
 
         "#definition.variables.makefile": [
-            {match: include("VAR_REF"), 0: "variable"}
-            {match: include("AUTOMATIC_VAR"), 0: "special_var"}
+            {
+                match: include("VAR_REF")
+                0: "variable"
+            }
+            {
+                match: include("AUTOMATIC_VAR")
+                0: "special_var"
+            }
         ]
 
         "#definition.targets.makefile": [
-            {match: include("META_TARGET"), 0: "meta"}
-            {match: include("TARGET"), 0: "target"}
+            {
+                match: include("META_TARGET")
+                0: "meta"
+            }
+            {
+                match: include("TARGET")
+                0: "target"
+            }
         ]
 
         "#definition.assignments.makefile": {
@@ -92,8 +123,14 @@
         }
 
         "#definition.keywords.makefile": [
-            {match: include("KEYWORDS"), 0: "keyword"}
-            {match: include("BUILTIN_FUNCS"), 0: "function"}
+            {
+                match: include("KEYWORDS")
+                0: "keyword"
+            }
+            {
+                match: include("BUILTIN_FUNCS")
+                0: "function"
+            }
         ]
 
         "#definition.operators.makefile": {
