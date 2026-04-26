@@ -1,0 +1,93 @@
+name: Bug Report
+description: Report a bug or incorrectly highlighted token in the Makefile syntax file.
+title: "[Bug]: "
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to help improve the Makefile syntax for MT Manager. Please provide as much detail as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+      placeholder: The automatic variable `$^` is not highlighted in the `makefile` syntax.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide detailed steps to reproduce the bug.
+      placeholder: |
+        1. Install the latest `makefile.mtsx` release.
+        2. Open the following Makefile content in MT Manager:
+           ```
+           program: main.o utils.o
+               gcc -o $@ $^
+           ```
+        3. Observe the highlighting of `$^`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Both `$@` and `$^` should appear in the "special_var" color.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include screenshots by dragging and dropping them here.
+      placeholder: Only `$@` is colorized; `$^` remains the default text color.
+    validations:
+      required: true
+
+  - type: input
+    id: mtsx_version
+    attributes:
+      label: Syntax File Version
+      description: Which version of `makefile.mtsx` are you using?
+      placeholder: e.g., 1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide details about your setup.
+        - MT Manager version: (e.g., 2.14.1)
+        - Android version: (e.g., 13)
+        - Device: (e.g., Samsung Galaxy S23)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: make_style
+    attributes:
+      label: Makefile Variant
+      description: What kind of Makefile are you working with?
+      options:
+        - GNU Make
+        - BSD Make
+        - NMake
+        - Other (describe in additional context)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (e.g., custom theme, conflicting syntax files).
