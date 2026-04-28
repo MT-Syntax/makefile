@@ -104,7 +104,7 @@ BREAKING CHANGE: The 'old_style' style has been removed. Any custom themes relyi
 - Use **2 spaces** for indentation.
 - Place a single space after colons in object definitions (e.g., `name: ["Makefile"]`).
 - Keep regex patterns as readable as possible; use named `defines` for complex or repeated patterns.
-- Follow the existing structure of `.mtsx` files (e.g., order of `styles`, `defines`, `contains`).
+- Follow the existing structure of `makefile.mtsx` file (e.g., order of `styles`, `defines`, `contains`).
 
 ## License
 
