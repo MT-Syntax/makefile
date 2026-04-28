@@ -19,7 +19,7 @@
 
 ## About
 
-A comprehensive `.mtsx` syntax highlighting file for **GNU Make** and **Makefile** documents, designed specifically for the **MT Manager** text editor. This definition brings accurate, desktop‑grade syntax coloring to Makefiles on your Android device.
+A comprehensive syntax highlighting file for **GNU Make** and **Makefile** documents, designed specifically for the **MT Manager** text editor. This definition brings accurate, desktop‑grade syntax coloring to Makefiles on your Android device.
 
 ## Features
 
