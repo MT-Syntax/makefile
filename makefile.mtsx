@@ -1,0 +1,170 @@
+// Makefile Syntax Highlighting for MT Manager
+// Supports GNU Make syntax
+// Author: MT-Syntax Team
+// GitHub: https://github.com/MT-Syntax/makefile
+// License: MIT License (https://github.com/MT-Syntax/makefile/blob/main/LICENSE)
+{
+    name: ["Makefile", "Makefile", "makefile", "GNUmakefile", ".mk", ".make"]
+
+    comment: {startsWith: "#", addToContains: false}
+
+    bracketPairs: ["{}", "[]", "()"]
+
+    styles: [
+        "target"       , #C77B2E, #E8BF6A
+        "directive"    > "keyword", @B
+        "varDef"       , #594DEE, #6ECB8A
+        "varRef"       , #E65100, #64B5F6
+        "autoVar"      > "constant"
+        "function"     > "namespace"
+        "assignment"   , #C02020, #FF6060
+        "special"      > "keyword2"
+        "recipePrefix" > "meta"
+        "shellOperator", #B06020, #D09050
+        "escape"       > "strEscape"
+        "todo"         , #C08000, #FFD700, @B
+    ]
+
+    defines: [
+        "function-names": keywordsToRegex(
+            "subst patsubst strip findstring filter-out filter sort"
+            "wordlist words firstword lastword word notdir dir suffix"
+            "basename addsuffix addprefix join wildcard realpath abspath"
+            "error warning info origin flavor foreach if or and call"
+            "eval file value shell intcmp let"
+        )
+
+        "special-target-names": keywordsToRegex(
+            "PHONY SUFFIXES DEFAULT PRECIOUS INTERMEDIATE"
+            "SECONDARY SECONDEXPANSION DELETE_ON_ERROR IGNORE"
+            "LOW_RESOLUTION_TIME SILENT EXPORT_ALL_VARIABLES"
+            "NOTPARALLEL ONESHELL POSIX WAIT"
+        )
+
+        "automatic-variables": [
+            {match: /\$\([\@\<\^\?\*\+\|\%][DF]\)/, 0: "autoVar"}
+            {match: /\$[\@\<\^\?\*\+\|\%]/, 0: "autoVar"}
+        ]
+
+        "variable-references": [
+            {include: "automatic-variables"}
+            {match: /\$[\(\{][A-Za-z_][\w.-]*[\)\}]/, 0: "varRef"}
+            {match: /\$[A-Za-z_]/, 0: "varRef"}
+        ]
+
+        "shell-variables": [
+            {match: /\$\$[\(\{][A-Za-z_][\w.-]*[\)\}]/, 0: "varRef"}
+            {match: /\$\$[A-Za-z_][\w.-]*/, 0: "varRef"}
+        ]
+
+        "make-functions": [
+            {
+                start: {match: /\$\(/ + include("function-names") + /\s/}
+                end: {match: /\)/}
+                style: "function"
+                contains: [
+                    {include: "variable-references"}
+                    {include: "make-functions"}
+                ]
+            }
+        ]
+
+        "string-literals": [
+            {
+                start: {match: /"/}
+                end: {match: /(?m)"|$/}
+                style: "string"
+                contains: [
+                    {include: "shell-variables"}
+                    {include: "variable-references"}
+                    {match: /\\./, 0: "escape"}
+                ]
+            }
+            {
+                start: {match: /'/}
+                end: {match: /(?m)'|$/}
+                style: "string"
+            }
+        ]
+
+        "#definition.variables": [
+            {include: "automatic-variables"}
+            {include: "shell-variables"}
+            {
+                start: {match: /\$\([A-Za-z_][\w.-]*:/}
+                end: {match: /\)/}
+                style: "varRef"
+                contains: [
+                    {include: "variable-references"}
+                    {match: /=/, 0: "assignment"}
+                ]
+            }
+            {include: "variable-references"}
+            {
+                match: /(?m)(?<=^)([A-Za-z_][\w.-]*)(\s*(?:::=|\?=|\+=|!=|:=|=))/
+                1: "varDef"
+                2: "assignment"
+            }
+        ]
+
+        "#definition.directives": [
+            {
+                start: {match: /(?m)(?<=^\s*)(?:override\s+)?define\s+(\S+)/, 1: "varDef"}
+                end: {match: /(?m)(?<=^\s*)endef\b/}
+                style: "directive"
+                contains: [
+                    {include: "variable-references"}
+                    {include: "make-functions"}
+                ]
+            }
+            {match: /(?m)(?<=^\s*)(ifeq|ifneq)(?=\s*\()/, 0: "directive"}
+            {match: /(?m)(?<=^\s*)(ifdef|ifndef)\s+(\S+)/, 1: "directive", 2: "varRef"}
+            {match: /(?m)(?<=^\s*)(else|endif)\b/, 0: "directive"}
+            {match: /(?m)(?<=^\s*)(-include|sinclude|include)\b/, 0: "directive"}
+            {match: /(?m)(?<=^\s*)(export|unexport)\s+([A-Za-z_][\w.-]*)/, 1: "directive", 2: "varRef"}
+            {match: /(?m)(?<=^\s*)(export|unexport)\b/, 0: "directive"}
+            {match: /(?m)(?<=^\s*)(override|vpath|private)\b/, 0: "directive"}
+            {match: /(?m)(?<=^\s*)(undefine)\s+(\S+)/, 1: "directive", 2: "varRef"}
+        ]
+
+        "#definition.targets": [
+            {match: /(?m)(?<=^)\./ + include("special-target-names") + /(?=\s*:)/, 0: "special"}
+            {match: /&&|\|\|/, 0: "shellOperator"}
+            {
+                match: /(?m)(?<=^)([^#\t\n][^#=\n]*?)(::?)(?=\s|$)/
+                1: "target"
+                2: "assignment"
+            }
+            {match: /(?m)(?<=^\t)([@\-\+])/, 0: "recipePrefix"}
+            {match: /%/, 0: "special"}
+        ]
+
+        "#definition.comments": {
+            start: {match: /#/}
+            end: {match: /(?m)$/}
+            style: "comment"
+            contains: [
+                {match: keywordsToRegex("TODO FIXME XXX NOTE BUG HACK"), 0: "todo"}
+            ]
+        }
+
+        "#definition.literals": [
+            {include: "string-literals"}
+            {match: /\\\n/, 0: "escape"}
+            {number: "10|16|F|E"}
+        ]
+
+        "#definition.functions": [
+            {include: "make-functions"}
+        ]
+    ]
+
+    contains: [
+        {include: "#definition.comments"}
+        {include: "#definition.literals"}
+        {include: "#definition.functions"}
+        {include: "#definition.variables"}
+        {include: "#definition.directives"}
+        {include: "#definition.targets"}
+    ]
+}
